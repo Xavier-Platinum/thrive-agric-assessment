@@ -10,7 +10,7 @@ module.exports = {
      */
     async createInventory(data) {
         const item = await repository.create(data);
-        eventEmitter('stock_in', item);
+        eventEmitter.emit('stock_in', item);
         return item;
     },
 
@@ -22,7 +22,7 @@ module.exports = {
      */
     async updateInventory(id, data) {
         const item = await repository.update(id, data);
-        eventEmitter('stock_out', item);
+        eventEmitter.emit('stock_out', item);
         return item;
     },
 

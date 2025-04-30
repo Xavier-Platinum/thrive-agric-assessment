@@ -1,0 +1,15 @@
+module.exports = [
+    'fertilizer',
+    'urea',
+    'manure',
+    'seeds',
+    'herbicide',
+    'pesticide',
+    'maize',
+    'wheat',
+    'rice',
+    'barley',
+    'sorghum',
+    'oats',
+    'soybean',
+];

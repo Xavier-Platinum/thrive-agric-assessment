@@ -141,14 +141,14 @@ const inventorySchema = new mongoose.Schema({
   }],
   barcode: {
     type: String,
-    unique: true,
+    unique: false,
     trim: true,
-    validate: {
-      validator: function(v) {
-        return /^[0-9]{12,13}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid barcode!`
-    }
+    // validate: {
+    //   validator: function(v) {
+    //     return /^[0-9]{12,13}$/.test(v);
+    //   },
+    //   message: props => `${props.value} is not a valid barcode!`
+    // }
   },
   serialNumber: {
     type: String,

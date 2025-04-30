@@ -1,5 +1,5 @@
 const express = require("express");
-const controller = require("#root/src/interfaces/http/controllers/warehouse/index.js");
+const { warehouseController: controller } = require('#root/src/interfaces/http/controllers/index.js');
 const router = express.Router();
 
 router.post("/", controller.createWarehouse);
@@ -10,4 +10,3 @@ router.get("/name/:name", controller.getWarehouseByName);
 router.delete("/:id", controller.deleteWarehouse);
 
 module.exports = router;
-// Which is better starting the cluster in the main file or in the cluster file? and which processes are best for primary cluster is db or server itself? and which is best for worker process?
