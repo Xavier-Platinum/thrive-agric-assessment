@@ -1,8 +1,9 @@
-# 🌾 ThriveAgric Smart Inventory System
+# ThriveAgric Smart Inventory System
 
 ThriveAgric assessment backend platform for managing agricultural inventory across warehouses.
 
-## ⚙️ Architecture
+## Architecture
+
 - Node.js + Express.js (API)
 - MongoDB (Mongoose ODM)
 - Bull Queue (Background Jobs)
@@ -10,8 +11,9 @@ ThriveAgric assessment backend platform for managing agricultural inventory acro
 - Mocked OpenAI-powered AI Assistant
 - Modular Namespace-based architecture for scalability
 
-## 📁 Namespace Structure
-```
+## Namespace Structure
+
+```plaintext
 src/
 ├── domains
 │   ├── inventory
@@ -23,16 +25,16 @@ src/
 │   │   ├── service.js
 │   │   └── repository.js
 │   ├── sync
-│   │   └── syncService.js
+│   │   └── service.js
 │   └── ai
-│       └── aiService.js
+│       └── service.js
 ├── infrastructure
 │   ├── database
 │   │   └── connection.js
 │   ├── jobs
-│   │   └── duplicateDetector.js
+│   │   └── duplication.js
 │   ├── events
-│   │   └── inventoryEvents.js
+│   │   └── inventory.js
 │   └── config
 │       └── env.js
 ├── interfaces
@@ -40,124 +42,108 @@ src/
 │       ├── routes
 │       │   └── index.js
 │       ├── controllers
-│       │   ├── inventoryController.js
-│       │   ├── warehouseController.js
-│       │   ├── syncController.js
-│       │   └── aiController.js
+│       │   ├── inventory/index.js
+│       │   ├── warehouse/index.js
+│       │   ├── sync/index.js
+│       │   ├── webhook/index.js
+│       │   └── ai/index.js
 │       └── middleware
 │           └── validator.js
 ├── shared
 │   ├── utils
-│   │   └── fuzzyMatcher.js
+│   │   └── matcher.js
 │   ├── constants
 │   └── validation
-│       ├── inventoryValidation.js
-│       └── warehouseValidation.js
+│       ├── inventory.validation.js
+│       └── warehouse.validation.js
+index.js
 server.js
 ```
 
-## 🚀 Setup Instructions
+## Setup Instructions
+
 ```bash
-git clone https://github.com/your-org/smart-inventory-backend.git
-cd smart-inventory-backend
+git clone https://github.com/Xavier-Platinum/assessment-thrive-agric.git
+cd assessment-thrive-agric
 npm install
 ```
 
-### 🔧 Configure Environment
-```env
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/thrive_inventory
-REDIS_URL=redis://127.0.0.1:6379
+### Configure Environment
+
+Example env config is in .env.example run the code below and update as wish.
+
+```bash
+cp .env.sample .env
 ```
 
-### ▶️ Run the App
+### Run the App
+
 ```bash
 npm run dev
+yarn dev
 ```
 
 To run background jobs:
+
 ```bash
-node src/infrastructure/jobs/duplicateDetector.js
+node src/infrastructure/jobs/duplication.js
 ```
 
----
+## API Endpoints
 
-## 📱 API Endpoints
+### Inventory
 
-### 🔹 Inventory
 - `POST /api/inventory` – Add new inventory (emits `stock_in`)
 - `PUT /api/inventory/:id` – Update inventory (emits `stock_out`)
 - `GET /api/inventory` – List all inventory items
 - `DELETE /api/inventory/:id` – Delete inventory item
 
-### 🔹 Warehouses
+### Warehouses
+
 - `POST /api/warehouses` – Create new warehouse
 - `GET /api/warehouses` – List warehouses
 - `DELETE /api/warehouses/:id` – Delete warehouse
 
-### 🔹 Offline Sync
+### Offline Sync
+
 - `POST /api/sync` – Sync offline data
-```json
-{
-  "offlineData": [
-    { "name": "Fertilzr Urea", "quantity": 20, "warehouseId": "abc123" }
-  ]
-}
-```
 
-### 🔹 AI Assistant (Mocked NLP)
+### Webhook
+
+- `POST /api/webhook/stream` – Emissions from events updated in realtime to webhook
+- Structured event payload (data, type, message, event).
+- Auto-cleanup on client disconnect.
+
+### AI Assistant (Mocked NLP)
+
 - `POST /api/ai/suggest`
-```json
-{ "input": "fertilzr" }
-```
-Response:
-```json
-{ "suggestion": "Fertilizer - Urea" }
-```
-
 - `POST /api/ai/explain`
-```json
-{ "itemName": "Fertilizer - Urea" }
-```
-Response:
-```json
-{ "explanation": "Fertilizer - Urea helps crops grow faster by providing essential nitrogen." }
-```
 
----
+### Background Jobs
 
-## 🎯 Enterprise Features
-
-### ✅ Background Jobs
 - **Duplicate Detection Job** (Runs every 5 mins)
   - Uses `Levenshtein distance` + `Agro Keywords` (e.g., "fertilzr" → "fertilizer")
-  - Custom fuzzy matching from `shared/utils/fuzzyMatcher.js`
-  - Job implemented using `Bull`
+  - Custom fuzzy matching from `shared/utils/matcher.js`
+  - Job implemented using `Bull` which emits any matching data through events to webhook
 
-### 📱 Real-time Events
+### Real-time Events
+
 - Stock events (`stock_in`, `stock_out`) are emitted from `inventoryService` and consumed via in-app pub/sub using `EventEmitter`.
 
-### 📌 Validation
-- Custom validators for input payloads using `Joi` via `interfaces/http/middleware/validator.js`
+### Validation
 
----
+- Custom validators for input payloads using `shared/validations/*` via `interfaces/http/middleware/requests/index.js['validationHandler']`.
 
-## ✅ Assumptions
+## Assumptions
+
 - AI suggestions are based on dynamic agricultural keywords.
 - Sync intelligently merges or creates items by normalized name and warehouse.
-- Future integration of actual OpenAI NLP can be dropped into `aiService.js`.
+- Future integration of actual OpenAI NLP can be dropped into `ai/service.js` configured in `utils/matcher.js` .
 
----
+## Postman Documentation
 
-## 🧪 Testing
-Coming soon: Jest-based unit tests and Postman collection.
+[Documentation](https://documenter.getpostman.com/view/10291803/2sB2j4fWRM)
 
----
+## Engineer
 
-## 📦 Bonus
-- Fully modular design ready for containerization (Docker, K8s)
-- Extensible for RabbitMQ, Redis Streams, etc.
-
----
-
-Let me know if you'd like the actual code export or Dockerized deployment next.
+[@Xavier-Platinum](https://github.com/Xavier-Platinum)
