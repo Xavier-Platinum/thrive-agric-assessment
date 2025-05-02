@@ -1,29 +1,236 @@
+const { type } = require('express/lib/response');
 const mongoose = require('mongoose');
 
 const warehouseSchema = new mongoose.Schema({
-  name: String,
-  location: String,
-  capacity: Number,
-  currentStock: Number,
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^[a-zA-Z0-9\s]+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid warehouse name!`
+    }
+  },
+  location: {
+    type: String,
+    required: false,
+    trim: true,
+    default: null,
+    // validate: {
+    //   validator: function(v) {
+    //     return /^[a-zA-Z0-9\s,]+$/.test(v);
+    //   },
+    //   message: props => `${props.value} is not a valid location!`
+    // }
+  },
+  capacity: {
+    type: Number,
+    required: false,
+    min: 0,
+    default: 0
+  },
+  currentStock: {
+    type: Number,
+    required: false,
+    min: 0,
+    default: 0
+  },
   inventory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Inventory' }],
   manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   contactNumber: String,
-  email: String,
+  email: {
+    type: String,
+    // validate: {
+    //   validator: function(v) {
+    //     return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+    //   },
+    //   message: props => `${props.value} is not a valid email!`
+    // },
+    default: null
+  },
   address: {
-    street: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    country: String
+    street: {
+      type: String,
+      required: false,
+      trim: true,
+      default: null,
+    },
+    city: {
+      type: String,
+      required: false,
+      trim: true,
+      default: null,
+    },
+    state: {
+      type: String,
+      required: false,
+      trim: true,
+      default: null,
+    },
+    zipCode: {
+      type: String,
+      required: false,
+      trim: true,
+      default: null,
+    },
+    country: {
+      type: String,
+      required: false,
+      trim: true,
+      default: null,
+    }
   },
   operatingHours: {
-    monday: { open: String, close: String },
-    tuesday: { open: String, close: String },
-    wednesday: { open: String, close: String },
-    thursday: { open: String, close: String },
-    friday: { open: String, close: String },
-    saturday: { open: String, close: String },
-    sunday: { open: String, close: String }
+    monday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    tuesday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    wednesday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    thursday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    friday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    saturday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } },
+    sunday: { open: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    }, close: {
+      type: String,
+      required: false,
+      // validate: {
+      //   validator: function(v) {
+      //     return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid time format!`
+      // },
+      default: null
+    } }
   },
   status: {
     type: String,

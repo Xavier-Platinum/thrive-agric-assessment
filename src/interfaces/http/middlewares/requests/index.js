@@ -20,6 +20,13 @@ exports["requestsHandler"] = (req, res, next) => {
  */
 exports['validationHandler'] = (schema, check = 'body') => {
     return (req, res, next) => {
+        if (!req[check]) {
+            return res.status(400).json({
+                status: 'error',
+                message: `Missing ${check} in request`
+            });
+        }
+
         const validationResult = schema.validate(req[check]);
         if (validationResult.error) {
             return res.status(400).json({

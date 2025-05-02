@@ -1,3 +1,4 @@
+const { explanationGenerator } = require("#root/src/shared/utils/explanations.js");
 const { suggest } = require("#root/src/shared/utils/matcher.js");
 
 module.exports = {
@@ -18,14 +19,14 @@ module.exports = {
 
     /**
      * Explain the item based on its name
-     * @param {string} itemName - Name of the item to explain
+     * @param {string} input - Name of the item to explain
      * @returns {Promise<string>} - Explanation of the item
      */
-    async explainItem(itemName) {
+    async explainItem(input) {
         // Simulate an explanation of the item
         return new Promise((resolve) => {
-            setTimeout(() => {
-                const explanation = `The item "${itemName}" is used in agricultural operations to boost productivity.`;
+            setTimeout(async() => {
+                const explanation = await explanationGenerator(input);
                 resolve(explanation);
             }, 1000);
         });

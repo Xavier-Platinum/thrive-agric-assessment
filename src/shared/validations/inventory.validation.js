@@ -55,7 +55,8 @@ exports.inventoryValidationSchema = Joi.object({
     location: locationSchema,
     tags: Joi.array().items(Joi.string().trim()).optional(),
     barcode: Joi.string().optional(),
-    serialNumber: Joi.string().regex(/^[A-Z0-9]{8,12}$/).optional(),
+    serialNumber: Joi.string().optional().trim(),
+    // serialNumber: Joi.string().regex(/^[A-Z0-9]{8,12}$/).optional(),
     weight: Joi.number().optional(),
     dimensions: dimensionsSchema,
     customFields: Joi.object().optional(),
@@ -77,7 +78,8 @@ exports.updateInventoryValidationSchema = Joi.object({
     location: locationSchema,
     tags: Joi.array().items(Joi.string().trim()),
     barcode: Joi.string(),
-    serialNumber: Joi.string().regex(/^[A-Z0-9]{8,12}$/),
+    serialNumber: Joi.string(),
+    // serialNumber: Joi.string().regex(/^[A-Z0-9]{8,12}$/),
     weight: Joi.number(),
     dimensions: dimensionsSchema,
     customFields: Joi.object(),
@@ -107,3 +109,43 @@ exports.getInventoryByIdValidationSchema = Joi.object({
 exports.getInventoryByNameValidationSchema = Joi.object({
     name: Joi.string().trim().required()
 });
+
+exports.inventoryArrayValidationSchema = Joi.array().items({
+    name: Joi.string().trim().required(),
+    quantity: Joi.number().min(0).required(),
+    warehouseId: Joi.string().hex().length(24).required(),
+    description: Joi.string().allow('', null),
+    price: Joi.number().min(0).required(),
+    category: Joi.string().default('other'),
+    supplier: supplierSchema,
+    expirationDate: Joi.date().greater('now').optional(),
+    batchNumber: Joi.string().optional(),
+    status: Joi.string().valid('available', 'out_of_stock', 'discontinued').default('available'),
+    location: locationSchema,
+    tags: Joi.array().items(Joi.string().trim()).optional(),
+    barcode: Joi.string().optional(),
+    serialNumber: Joi.string().optional().trim(),
+    // serialNumber: Joi.string().regex(/^[A-Z0-9]{8,12}$/).optional(),
+    weight: Joi.number().optional(),
+    dimensions: dimensionsSchema,
+    customFields: Joi.object().optional(),
+    auditTrail: Joi.array().items(auditTrailSchema).optional(),
+    images: Joi.array().items(imageSchema).optional()
+});
+
+// exports.validateInventoryArray = (req, res, next) => {
+//     const schema = Joi.array().items(inventoryValidationSchema);
+
+//     const { error } = schema.validate(req.body, { abortEarly: false });
+
+//     if (error) {
+//         return res.status(400).json({
+//             success: false,
+//             statusCode: 400,
+//             data: null,
+//             error: error.details.map(err => err.message)
+//         });
+//     }
+
+//     next();
+// };

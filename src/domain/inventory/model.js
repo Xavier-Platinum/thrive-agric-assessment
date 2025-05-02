@@ -154,12 +154,12 @@ const inventorySchema = new mongoose.Schema({
     type: String,
     unique: true,
     trim: true,
-    validate: {
-      validator: function(v) {
-        return /^[A-Z0-9]{8,12}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid serial number!`
-    }
+    // validate: {
+    //   validator: function(v) {
+    //     return /^[A-Z0-9]{8,12}$/.test(v);
+    //   },
+    //   message: props => `${props.value} is not a valid serial number!`
+    // }
   },
   weight: Number,
   dimensions: {

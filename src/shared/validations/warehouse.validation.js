@@ -26,7 +26,7 @@ const imageSchema = Joi.object({
 
 exports.warehouseValidationSchema = Joi.object({
     name: Joi.string().required(),
-    location: Joi.string().optional(),
+    location: Joi.string().optional().trim(),
     capacity: Joi.number().min(0).optional(),
     currentStock: Joi.number().min(0).optional(),
     inventory: Joi.array().items(Joi.string().hex().length(24)).optional(),

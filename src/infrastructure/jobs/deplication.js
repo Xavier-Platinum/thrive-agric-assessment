@@ -1,6 +1,7 @@
 const Queue = require('bull');
 const model = require('#root/src/domain/inventory/model.js');
 const { suggest } = require('#root/src/shared/utils/matcher.js');
+const eventEmitter = require('../events/inventory');
 
 const dupQueue = new Queue('dup-check', process.env.REDIS_URL);
 dupQueue.on('completed', job => {
@@ -23,7 +24,9 @@ exports.setupJobProcessor = () => {
 
     for (const [key, list] of Object.entries(map)) {
       if (list.length > 1) {
-        console.log(`🔍 Duplicate candidates for "${key}":`, list.map(i => i.name));
+        const items = list.map(i => i.name);
+        console.log(`🔍 Duplicate candidates for "${key}":`, items);
+        eventEmitter.emit('stock_duplicates', items)
       }
     }
   });
