@@ -63,8 +63,8 @@ server.js
 ## Setup Instructions
 
 ```bash
-git clone https://github.com/Xavier-Platinum/assessment-thrive-agric.git
-cd assessment-thrive-agric
+git clone https://github.com/Xavier-Platinum/thrive-agric-assessment.git
+cd thrive-agric-assessment
 npm install
 ```
 
